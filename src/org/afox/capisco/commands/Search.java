@@ -60,8 +60,18 @@ public class Search extends CapiscoCommand
 			if ("false".equals(get("/lucene/docID")))
 				for (int i = 0; i < results.totalHits; i++) 
 				{
-					Document doc = lucene.doc(hits[i].doc);
-					print(termMatcher(query, lucene, hits[i].doc, doc.get("path")) + "\n");
+				    // Document doc = lucene.doc(hits[i].doc);
+				    // print(termMatcher(query, lucene, hits[i].doc, doc.get("path")) + "\n");
+				    
+				    // If filename to doc matches the HathiTrust format, then serve up
+				    // a cleaner doc-id and page number
+
+				    Document doc = lucene.doc(hits[i].doc);
+				    String doc_path = doc.get("path");
+				    String pattern = "^.+/(.*?)/pairtree_root/.*/([^/]+)[/_](\\d+)\\.txt$";
+				    String path_id = doc_path.replaceFirst(pattern, "$1.$2 $3");
+				    print(path_id+"|");
+
 				}
 			else
 				for (int i = 0; i < results.totalHits; i++) 
